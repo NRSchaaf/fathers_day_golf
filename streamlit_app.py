@@ -95,7 +95,10 @@ if unlocked:
 
         selected_player = st.selectbox("Select Player", list(player_dict.keys()))
         round_date = st.date_input("Round Date", value=date.today())
-        location = st.text_input("Location")
+
+        # Hardcoded location
+        location = "City Club Marietta"
+
         score = st.number_input("Total Score", min_value=18, max_value=200, step=1)
 
         if st.button("Add Score"):
@@ -105,7 +108,7 @@ if unlocked:
                 VALUES (%s, %s, %s, %s)
             """, (player_id, round_date, location, score))
             conn.commit()
-            st.success(f"✅ Score for {selected_player} on {round_date} added.")
+            st.success(f"✅ Score for {selected_player} at {location} on {round_date} added.")
 
 else:
     st.info("🔒 To add a player or score, enter the correct password in the sidebar.")
