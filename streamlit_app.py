@@ -34,7 +34,7 @@ else:
 st.title("⛳ Annual Father's Day Golf Tournament")
 st.subheader("👥 Players")
 
-cursor.execute("SELECT Player_ID, First_Name, Last_Name, Birthdate, Handycap FROM Players ORDER BY Last_Name")
+cursor.execute("SELECT * FROM PLAYERS_ENRICHED ORDER BY Last_Name")
 players_df = cursor.fetchall()
 player_cols = [desc[0] for desc in cursor.description]
 st.dataframe(data=players_df, use_container_width=True, column_config=dict(zip(player_cols, player_cols)))
