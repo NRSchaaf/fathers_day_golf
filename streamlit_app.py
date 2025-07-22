@@ -75,13 +75,13 @@ if unlocked:
             min_value=date(1900, 1, 1),
             max_value=date.today()
         )
-        handycap = st.number_input("Handicap", min_value=0.0, max_value=54.0, step=0.1)
+        handicap = st.number_input("Handicap", min_value=0.0, max_value=54.0, step=0.1)
 
         if st.button("Add Player"):
             cursor.execute("""
-                INSERT INTO Players (First_Name, Last_Name, Birthdate, Handycap)
+                INSERT INTO Players (First_Name, Last_Name, Birthdate, Handicap)
                 VALUES (%s, %s, %s, %s)
-            """, (first, last, birthdate, handycap))
+            """, (first, last, birthdate, handicap))
             conn.commit()
             st.success(f"✅ Player {first} {last} added.")
 
