@@ -31,7 +31,7 @@ else:
     st.sidebar.info("Viewing only. Enter password to enable data entry.")
 
 # ------------------ Display Players ------------------ #
-st.title("⛳ Fathers Day Golf Tournament Manager")
+st.title("⛳ Annual Father's Day Golf Tournament")
 st.subheader("👥 Players")
 
 cursor.execute("SELECT Player_ID, First_Name, Last_Name, Birthdate, Handycap FROM Players ORDER BY Last_Name")
