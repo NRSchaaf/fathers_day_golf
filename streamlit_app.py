@@ -47,19 +47,16 @@ st.dataframe(players_df, use_container_width=True)
 st.subheader("📊 Scores")
 
 cursor.execute("""
-    SELECT 
-        s.Score_ID,
-        p.First_Name || ' ' || p.Last_Name AS Player,
-        s.Round_Date,
-        s.Location,
-        s.Total_Score
-    FROM Scores s
-    JOIN Players p ON s.Player_ID = p.Player_ID
-    ORDER BY s.Round_Date DESC
+    SELECT * FROM Current_And_Previous_Season_Scores
 """)
-scores_df = cursor.fetchall()
-score_cols = [desc[0] for desc in cursor.description]
-st.dataframe(data=scores_df, use_container_width=True, column_config=dict(zip(score_cols, score_cols)))
+scores_data = cursor.fetchall()
+score_columns = [desc[0] for desc in cursor.description]
+
+# Convert to DataFrame
+scores_df = pd.DataFrame(scores_data, columns=score_columns)
+
+# Display DataFrame with column headers
+st.dataframe(scores_df, use_container_width=True)
 
 # ------------------ Tabs for Data Entry ------------------ #
 if unlocked:
