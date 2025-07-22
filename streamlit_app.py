@@ -1,5 +1,6 @@
 import streamlit as st
 import snowflake.connector
+import pandas as pd
 from datetime import date
 
 # ------------------ Setup ------------------ #
@@ -35,9 +36,12 @@ st.title("⛳ Annual Father's Day Golf Tournament")
 st.subheader("👥 Players")
 
 cursor.execute("SELECT * FROM PLAYERS_ENRICHED ORDER BY Last_Name")
-players_df = cursor.fetchall()
-player_cols = [desc[0] for desc in cursor.description]
-st.dataframe(data=players_df, use_container_width=True, column_config=dict(zip(player_cols, player_cols)))
+rows = cursor.fetchall()
+colnames = [desc[0] for desc in cursor.description]
+
+players_df = pd.DataFrame(rows, columns=colnames)
+
+st.dataframe(players_df, use_container_width=True)
 
 # ------------------ Display Scores ------------------ #
 st.subheader("📊 Scores")
