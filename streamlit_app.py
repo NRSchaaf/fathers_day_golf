@@ -66,7 +66,11 @@ if unlocked:
 
         first = st.text_input("First Name")
         last = st.text_input("Last Name")
-        birthdate = st.date_input("Birthdate")
+        birthdate = st.date_input(
+            "Birthdate",
+            min_value=date(1900, 1, 1),
+            max_value=date.today()
+        )
         handycap = st.number_input("Handicap", min_value=0.0, max_value=54.0, step=0.1)
 
         if st.button("Add Player"):
