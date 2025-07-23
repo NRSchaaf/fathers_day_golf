@@ -170,6 +170,6 @@ col1, col2 = st.columns([0.5, 5])
 
 with col1:
     st.markdown("<small>Powered by </small>", unsafe_allow_html=True)
-    st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/Snowflake_Logo.png", width=100)  # Adjust size as needed
-with col2:
     
+with col2:
+    st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/Snowflake_Logo.png", width=100)  # Adjust size as needed
