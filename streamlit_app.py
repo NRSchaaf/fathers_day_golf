@@ -165,11 +165,13 @@ if unlocked:
 else:
     st.info("🔒 To add a player or score, enter the correct password in the sidebar.")
 
-# ------------------ Tabs for Data Entry ------------------ #
-col1, col2 = st.columns([0.5, 5])
+# ------------------ Powered by Snowflake ------------------ #
+st.markdown("---", unsafe_allow_html=True)
 
-with col1:
-    st.markdown("<small>Powered by </small>", unsafe_allow_html=True)
-    
-with col2:
-    st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/Snowflake_Logo.png", width=100)  # Adjust size as needed
+st.markdown("""
+    <div style='text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;'>
+        <span style='font-size: 0.9em;'>Powered by</span>
+        <img src='https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/Snowflake_Logo.png' width='80' style='margin-top: 2px;'/>
+    </div>
+""", unsafe_allow_html=True)
+
