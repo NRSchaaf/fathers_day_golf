@@ -42,7 +42,11 @@ leaderboard_columns = [desc[0] for desc in cursor.description]
 
 leaderboard_df = pd.DataFrame(leaderboard_data, columns=leaderboard_columns)
 
-st.dataframe(leaderboard_df, use_container_width=True)
+# Display only desired columns
+columns_to_display = ["FIRST_NAME", "LAST_NAME", "ROUND_DATE", "LOWEST_NET_SCORE"]
+filtered_leaderboard_df = leaderboard_df[columns_to_display]
+
+st.dataframe(filtered_leaderboard_df, use_container_width=True)
 
 # ------------------ Display Players ------------------ #
 st.subheader("👥 Players")
