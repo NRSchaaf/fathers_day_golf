@@ -85,30 +85,51 @@ if unlocked:
             st.success(f"✅ Player {first} {last} added.")
 
 
-    with tab2:
-        st.subheader("📝 Add Score")
-
-        # Load players for dropdown
-        cursor.execute("SELECT Player_ID, First_Name || ' ' || Last_Name AS Full_Name FROM Players ORDER BY Last_Name")
-        player_list = cursor.fetchall()
-        player_dict = {name: pid for pid, name in player_list}
-
-        selected_player = st.selectbox("Select Player", list(player_dict.keys()))
-        round_date = st.date_input("Round Date", value=date.today())
-
-        # Hardcoded location
-        location = "City Club Marietta"
-
-        score = st.number_input("Total Score", min_value=18, max_value=200, step=1)
-
-        if st.button("Add Score"):
+        with tab2:
+            st.subheader("📝 Add Score")
+    
+            # Load players for dropdown
+            cursor.execute("SELECT Player_ID, First_Name || ' ' || Last_Name AS Full_Name FROM Players ORDER BY Last_Name")
+            player_list = cursor.fetchall()
+            player_dict = {name: pid for pid, name in player_list}
+    
+            selected_player = st.selectbox("Select Player", list(player_dict.keys()))
+            round_date = st.date_input("Round Date", value=date.today())
+    
+            # Hardcoded location
+            location = "City Club Marietta"
+    
+            # Get selected player's sex
             player_id = player_dict[selected_player]
+            cursor.execute("SELECT Sex FROM Players WHERE Player_ID = %s", (player_id,))
+            player_sex = cursor.fetchone()[0]
+    
+            # Fetch available tee boxes for this location and sex
             cursor.execute("""
-                INSERT INTO Scores (Player_ID, Round_Date, Location, Total_Score)
-                VALUES (%s, %s, %s, %s)
-            """, (player_id, round_date, location, score))
-            conn.commit()
-            st.success(f"✅ Score for {selected_player} at {location} on {round_date} added.")
+                SELECT Tee_Box
+                FROM Course_Tee
+                WHERE Location = %s AND Sex = %s
+            """, (location, player_sex))
+            tee_boxes = [row[0] for row in cursor.fetchall()]
+    
+            if tee_boxes:
+                selected_tee_box = st.selectbox("Select Tee Box", tee_boxes)
+            else:
+                selected_tee_box = None
+                st.warning("⚠️ No tee boxes found for this player’s sex and location.")
+    
+            score = st.number_input("Total Score", min_value=18, max_value=200, step=1)
+    
+            if st.button("Add Score"):
+                if selected_tee_box:
+                    cursor.execute("""
+                        INSERT INTO Scores (Player_ID, Round_Date, Location, Tee_Box, Total_Score)
+                        VALUES (%s, %s, %s, %s, %s)
+                    """, (player_id, round_date, location, selected_tee_box, score))
+                    conn.commit()
+                    st.success(f"✅ Score for {selected_player} at {location} on {round_date} added.")
+                else:
+                    st.error("❌ Cannot add score without selecting a valid tee box.")
 
 else:
     st.info("🔒 To add a player or score, enter the correct password in the sidebar.")
