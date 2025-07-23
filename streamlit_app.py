@@ -31,6 +31,17 @@ if unlocked:
 else:
     st.sidebar.info("Viewing only. Enter password to enable data entry.")
 
+# ------------------ Display Leaderboard ------------------ #
+st.subheader("🏆 Current Leaderboard")
+
+cursor.execute("SELECT * FROM LEADERBOARD")
+leaderboard_data = cursor.fetchall()
+leaderboard_columns = [desc[0] for desc in cursor.description]
+
+leaderboard_df = pd.DataFrame(leaderboard_data, columns=leaderboard_columns)
+
+st.dataframe(leaderboard_df, use_container_width=True)
+
 # ------------------ Display Players ------------------ #
 st.title("⛳ Annual Father's Day Golf Tournament")
 st.subheader("👥 Players")
