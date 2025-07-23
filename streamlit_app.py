@@ -34,7 +34,7 @@ else:
 st.title("⛳ Annual Father's Day Golf Tournament")
 
 # ------------------ Display Leaderboard ------------------ #
-st.subheader("🏆 Current Leaderboard")
+st.subheader("🏆 Leaderboard")
 
 cursor.execute("SELECT * FROM LEADERBOARD")
 leaderboard_data = cursor.fetchall()
