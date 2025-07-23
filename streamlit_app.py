@@ -51,6 +51,9 @@ filtered_leaderboard_df = filtered_leaderboard_df.sort_values(by="LOWEST_NET_SCO
 
 st.dataframe(filtered_leaderboard_df, use_container_width=True)
 
+# ------------------ Commemorative Photo ------------------ #
+st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/2025-06-14_Fathers_Day.jpg", use_column_width=True)
+
 # ------------------ Display Players ------------------ #
 st.subheader("👥 Players")
 
