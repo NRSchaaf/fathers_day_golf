@@ -166,10 +166,10 @@ else:
     st.info("🔒 To add a player or score, enter the correct password in the sidebar.")
 
 # ------------------ Tabs for Data Entry ------------------ #
-col1, col2 = st.columns([2, 5])
+col1, col2 = st.columns([0.5, 5])
 
 with col1:
     st.markdown("<small>Powered by </small>", unsafe_allow_html=True)
 
 with col2:
-    st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/Snowflake_Logo.png", width=50)  # Adjust size as needed
+    st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/Snowflake_Logo.png", width=80)  # Adjust size as needed
