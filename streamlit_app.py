@@ -30,8 +30,9 @@ if unlocked:
     st.sidebar.success("✅ Access granted")
 else:
     st.sidebar.info("Viewing only. Enter password to enable data entry.")
+    
 # ------------------ Page/App Title ------------------ #
-st.title("⛳ Annual Father's Day Golf Tournament")
+st.title("⛳ Annual Father's Day Golf Tournament ⛳")
 
 # ------------------ Display Leaderboard ------------------ #
 st.subheader("🏆 Leaderboard")
@@ -50,6 +51,9 @@ filtered_leaderboard_df = leaderboard_df[columns_to_display]
 filtered_leaderboard_df = filtered_leaderboard_df.sort_values(by="LOWEST_NET_SCORE")
 
 st.dataframe(filtered_leaderboard_df, use_container_width=True)
+
+# ------------------ Commemorative Photo ------------------ #
+st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/2025-06-14_Fathers_Day.jpg", use_container_width=True)
 
 # ------------------ Display Players ------------------ #
 st.subheader("👥 Players")
