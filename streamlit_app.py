@@ -166,7 +166,7 @@ else:
     st.info("🔒 To add a player or score, enter the correct password in the sidebar.")
 
 # ------------------ Tabs for Data Entry ------------------ #
-col1, col2 = st.columns([0.1, 5])
+col1, col2 = st.columns([2, 5])
 
 with col1:
     st.markdown("<small>Powered by </small>", unsafe_allow_html=True)
