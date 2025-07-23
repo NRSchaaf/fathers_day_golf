@@ -64,7 +64,7 @@ if unlocked:
 
     with tab1:
         st.subheader("➕ Add New Player")
-
+    
         first = st.text_input("First Name")
         last = st.text_input("Last Name")
         birthdate = st.date_input(
@@ -73,14 +73,17 @@ if unlocked:
             max_value=date.today()
         )
         handicap = st.number_input("Handicap", min_value=0.0, max_value=54.0, step=0.1)
-
+    
+        sex = st.selectbox("Sex", ["Male", "Female"])
+    
         if st.button("Add Player"):
             cursor.execute("""
-                INSERT INTO Players (First_Name, Last_Name, Birthdate, Handicap)
-                VALUES (%s, %s, %s, %s)
-            """, (first, last, birthdate, handicap))
+                INSERT INTO Players (First_Name, Last_Name, Birthdate, Handicap, Sex)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (first, last, birthdate, handicap, sex))
             conn.commit()
             st.success(f"✅ Player {first} {last} added.")
+
 
     with tab2:
         st.subheader("📝 Add Score")
