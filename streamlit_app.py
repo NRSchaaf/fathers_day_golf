@@ -32,7 +32,7 @@ else:
     st.sidebar.info("Viewing only. Enter password to enable data entry.")
     
 # ------------------ Page/App Title ------------------ #
-st.title("⛳ Annual Father's Day Golf Tournament")
+st.title("⛳ Annual Father's Day Golf Tournament ⛳")
 
 # ------------------ Display Leaderboard ------------------ #
 st.subheader("🏆 Leaderboard")
