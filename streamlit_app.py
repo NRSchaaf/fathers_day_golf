@@ -30,6 +30,8 @@ if unlocked:
     st.sidebar.success("✅ Access granted")
 else:
     st.sidebar.info("Viewing only. Enter password to enable data entry.")
+# ------------------ Page/App Title ------------------ #
+st.title("⛳ Annual Father's Day Golf Tournament")
 
 # ------------------ Display Leaderboard ------------------ #
 st.subheader("🏆 Current Leaderboard")
@@ -43,7 +45,6 @@ leaderboard_df = pd.DataFrame(leaderboard_data, columns=leaderboard_columns)
 st.dataframe(leaderboard_df, use_container_width=True)
 
 # ------------------ Display Players ------------------ #
-st.title("⛳ Annual Father's Day Golf Tournament")
 st.subheader("👥 Players")
 
 cursor.execute("SELECT * FROM PLAYERS_ENRICHED ORDER BY Last_Name")
