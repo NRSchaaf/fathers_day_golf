@@ -95,72 +95,70 @@ if unlocked:
             min_value=date(1900, 1, 1),
             max_value=date.today()
         )
-        handicap = st.number_input("Handicap", min_value=0.0, max_value=54.0, step=0.1)
-    
+
         sex = st.selectbox("Sex", ["Male", "Female"])
     
         if st.button("Add Player"):
             cursor.execute("""
-                INSERT INTO Players (First_Name, Last_Name, Birthdate, Handicap, Sex)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (first, last, birthdate, handicap, sex))
+                INSERT INTO Players (First_Name, Last_Name, Birthdate, Sex)
+                VALUES (%s, %s, %s, %s)
+            """, (first, last, birthdate, sex))
             conn.commit()
             st.success(f"✅ Player {first} {last} added.")
-
-
-        with tab2:
-            st.subheader("📝 Add Score")
+            
+    with tab2:
+        st.subheader("📝 Add Score")
         
-            # Load players for dropdown
-            cursor.execute("SELECT PLAYER_ID, First_Name || ' ' || Last_Name AS Full_Name FROM PLAYERS ORDER BY Last_Name")
-            player_list = cursor.fetchall()
-            player_dict = {name: pid for pid, name in player_list}
+        # Load players for dropdown
+        cursor.execute("SELECT PLAYER_ID, First_Name || ' ' || Last_Name AS Full_Name FROM PLAYERS ORDER BY Last_Name")
+        player_list = cursor.fetchall()
+        player_dict = {name: pid for pid, name in player_list}
         
-            selected_player = st.selectbox("Select Player", list(player_dict.keys()))
-            player_id = player_dict[selected_player]
+        selected_player = st.selectbox("Select Player", list(player_dict.keys()))
+        player_id = player_dict[selected_player]
         
-            # Get player sex
-            cursor.execute("SELECT Sex FROM PLAYERS WHERE PLAYER_ID = %s", (player_id,))
-            player_sex = cursor.fetchone()[0]
+        # Get player sex
+        cursor.execute("SELECT Sex FROM PLAYERS WHERE PLAYER_ID = %s", (player_id,))
+        player_sex = cursor.fetchone()[0]
         
-            # Load course names
-            cursor.execute("SELECT DISTINCT course_name FROM COURSE ORDER BY course_name")
-            courses = [row[0] for row in cursor.fetchall()]
-            selected_course = st.selectbox("Select Course", courses)
+        # Load course names
+        cursor.execute("SELECT DISTINCT course_name FROM COURSE ORDER BY course_name")
+        courses = [row[0] for row in cursor.fetchall()]
+        selected_course = st.selectbox("Select Course", courses)
         
-            # Get Course_ID for selected course
-            cursor.execute("SELECT Course_ID FROM COURSE WHERE course_name = %s", (selected_course,))
-            course_id = cursor.fetchone()[0]
+        # Get Course_ID for selected course
+        cursor.execute("SELECT Course_ID FROM COURSE WHERE course_name = %s", (selected_course,))
+        course_id = cursor.fetchone()[0]
         
-            # Get available tee boxes for course and sex
-            cursor.execute("""
-                SELECT Tee_ID, Tee_Box
-                FROM COURSE_TEE
-                WHERE Course_ID = %s AND Tee_Box_Sex = %s
-                ORDER BY Tee_Box
-            """, (course_id, player_sex))
-            tee_rows = cursor.fetchall()
-            if not tee_rows:
-                st.warning("No tee boxes available for this course and player sex.")
-                selected_tee_id = None
+        # Get available tee boxes for course and sex
+        cursor.execute("""
+            SELECT Tee_ID, Tee_Box
+            FROM COURSE_TEE
+            WHERE Course_ID = %s AND Tee_Box_Sex = %s
+            ORDER BY Tee_Box
+        """, (course_id, player_sex))
+        tee_rows = cursor.fetchall()
+        if not tee_rows:
+            st.warning("No tee boxes available for this course and player sex.")
+            selected_tee_id = None
+        else:
+            tee_dict = {row[1]: row[0] for row in tee_rows}
+            selected_tee_box = st.selectbox("Select Tee Box", list(tee_dict.keys()))
+            selected_tee_id = tee_dict[selected_tee_box]
+        
+        round_date = st.date_input("Round Date", value=date.today())
+        score = st.number_input("Total Score", min_value=18, max_value=200, step=1)
+        
+        if st.button("Add Score"):
+            if selected_tee_id is None:
+                st.error("Please select a valid Tee Box before submitting.")
             else:
-                tee_dict = {row[1]: row[0] for row in tee_rows}
-                selected_tee_box = st.selectbox("Select Tee Box", list(tee_dict.keys()))
-                selected_tee_id = tee_dict[selected_tee_box]
-        
-            round_date = st.date_input("Round Date", value=date.today())
-            score = st.number_input("Total Score", min_value=18, max_value=200, step=1)
-        
-            if st.button("Add Score"):
-                if selected_tee_id is None:
-                    st.error("Please select a valid Tee Box before submitting.")
-                else:
-                    cursor.execute("""
-                        INSERT INTO SCORES (PLAYER_ID, ROUND_DATE, TOTAL_SCORE, TEE_ID)
-                        VALUES (%s, %s, %s, %s)
-                    """, (player_id, round_date, score, selected_tee_id))
-                    conn.commit()
-                    st.success(f"✅ Score for {selected_player} at {selected_course} on {round_date} added.")
+                cursor.execute("""
+                    INSERT INTO SCORES (PLAYER_ID, ROUND_DATE, TOTAL_SCORE, TEE_ID)
+                    VALUES (%s, %s, %s, %s)
+                """, (player_id, round_date, score, selected_tee_id))
+                conn.commit()
+                st.success(f"✅ Score for {selected_player} at {selected_course} on {round_date} added.")
 
 else:
     st.info("🔒 To add a player or score, enter the correct password in the sidebar.")
