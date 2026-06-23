@@ -2,7 +2,7 @@ import streamlit as st
 import snowflake.connector
 import pandas as pd
 import os
-import time
+import base64
 from datetime import date
 
 # ------------------ Setup ------------------ #
@@ -55,7 +55,7 @@ filtered_leaderboard_df = filtered_leaderboard_df.sort_values(by="LOWEST_NET_SCO
 
 st.dataframe(filtered_leaderboard_df, use_container_width=True)
 
-# ------------------ Rotating Commemorative Photo ------------------ #
+# ------------------ Commemorative Photos (Grid) ------------------ #
 IMAGE_DIR = "images"
 image_files = sorted([
     f for f in os.listdir(IMAGE_DIR)
@@ -63,12 +63,25 @@ image_files = sorted([
 ])
 
 if image_files:
-    # Rotate based on current time — changes every 5 seconds
-    index = int(time.time() // 5) % len(image_files)
-    st.image(
-        os.path.join(IMAGE_DIR, image_files[index]),
-        use_container_width=True
-    )
+    # Build HTML for a grid of rounded images
+    img_html_parts = []
+    for img_file in image_files:
+        img_path = os.path.join(IMAGE_DIR, img_file)
+        with open(img_path, "rb") as f:
+            encoded = base64.b64encode(f.read()).decode()
+        ext = img_file.rsplit(".", 1)[-1].lower()
+        mime = "image/jpeg" if ext in ("jpg", "jpeg") else f"image/{ext}"
+        img_html_parts.append(
+            f'<img src="data:{mime};base64,{encoded}" '
+            f'style="border-radius: 12px; width: 100%; height: auto;" />'
+        )
+
+    grid_html = f"""
+    <div style="display: grid; grid-template-columns: repeat({len(image_files)}, 1fr); gap: 16px;">
+        {"".join(f'<div>{img}</div>' for img in img_html_parts)}
+    </div>
+    """
+    st.markdown(grid_html, unsafe_allow_html=True)
 
 # ------------------ Display Players (sorted by FIRST_NAME) ------------------ #
 st.subheader("👥 Players")
