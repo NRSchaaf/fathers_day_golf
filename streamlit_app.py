@@ -1,6 +1,8 @@
 import streamlit as st
 import snowflake.connector
 import pandas as pd
+import os
+import time
 from datetime import date
 
 # ------------------ Setup ------------------ #
@@ -53,13 +55,25 @@ filtered_leaderboard_df = filtered_leaderboard_df.sort_values(by="LOWEST_NET_SCO
 
 st.dataframe(filtered_leaderboard_df, use_container_width=True)
 
-# ------------------ Commemorative Photo ------------------ #
-st.image("https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/2025-06-14_Fathers_Day.jpg", use_container_width=True)
+# ------------------ Rotating Commemorative Photo ------------------ #
+IMAGE_DIR = "images"
+image_files = sorted([
+    f for f in os.listdir(IMAGE_DIR)
+    if f.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".webp"))
+])
 
-# ------------------ Display Players ------------------ #
+if image_files:
+    # Rotate based on current time — changes every 5 seconds
+    index = int(time.time() // 5) % len(image_files)
+    st.image(
+        os.path.join(IMAGE_DIR, image_files[index]),
+        use_container_width=True
+    )
+
+# ------------------ Display Players (sorted by FIRST_NAME) ------------------ #
 st.subheader("👥 Players")
 
-cursor.execute("SELECT * FROM PLAYERS_ENRICHED ORDER BY Last_Name")
+cursor.execute("SELECT * FROM PLAYERS_ENRICHED ORDER BY FIRST_NAME")
 rows = cursor.fetchall()
 colnames = [desc[0] for desc in cursor.description]
 
@@ -67,11 +81,12 @@ players_df = pd.DataFrame(rows, columns=colnames)
 
 st.dataframe(players_df, use_container_width=True)
 
-# ------------------ Display Scores ------------------ #
+# ------------------ Display Scores (descending ROUND_DATE, then FIRST_NAME) ------------------ #
 st.subheader("📊 Scores")
 
 cursor.execute("""
     SELECT * FROM Current_And_Previous_Season_Scores
+    ORDER BY ROUND_DATE DESC, FIRST_NAME
 """)
 scores_data = cursor.fetchall()
 score_columns = [desc[0] for desc in cursor.description]
@@ -170,7 +185,6 @@ st.markdown("---", unsafe_allow_html=True)
 st.markdown("""
     <div style='text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;'>
         <span style='font-size: 0.8em;'>Powered by</span>
-        <img src='https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/images/Snowflake_Logo.png' width='100' style='margin-top: 2px;'/>
+        <img src='https://raw.githubusercontent.com/nrschaaf/fathers_day_golf/main/logos/Snowflake_Logo.png' width='100' style='margin-top: 2px;'/>
     </div>
 """, unsafe_allow_html=True)
-
