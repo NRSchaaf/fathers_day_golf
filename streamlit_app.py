@@ -55,15 +55,17 @@ filtered_leaderboard_df = filtered_leaderboard_df.sort_values(by="LOWEST_NET_SCO
 
 st.dataframe(filtered_leaderboard_df, use_container_width=True)
 
-# ------------------ Commemorative Photos (Grid) ------------------ #
+# ------------------ Commemorative Photos (2-Column Grid, Newest First) ------------------ #
 IMAGE_DIR = "images"
-image_files = sorted([
+image_files = [
     f for f in os.listdir(IMAGE_DIR)
     if f.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".webp"))
-])
+]
+
+# Sort descending by filename (YYYY-MM-DD prefix gives newest first)
+image_files.sort(reverse=True)
 
 if image_files:
-    # Build HTML for a grid of rounded images
     img_html_parts = []
     for img_file in image_files:
         img_path = os.path.join(IMAGE_DIR, img_file)
@@ -77,7 +79,7 @@ if image_files:
         )
 
     grid_html = f"""
-    <div style="display: grid; grid-template-columns: repeat({len(image_files)}, 1fr); gap: 16px;">
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
         {"".join(f'<div>{img}</div>' for img in img_html_parts)}
     </div>
     """
